@@ -89,7 +89,7 @@ export function updateElement(element, props, oldProps, isSVG) {
     }
   }
   if (hasUpdate) {
-    console.log('has update')
+    // console.log('has update')
   }
   if (hasUpdate && props.onupdate) {
     invokeLaterStack.push(() => props.onupdate(element, oldProps))

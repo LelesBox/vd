@@ -36,7 +36,7 @@ export default function patch (parent: HTMLElement | SVGElement, element: null |
        
        if (newKey === null) {
          if (oldKey === null) {
-           patch(element, oldElements[oldNodeIndex] || null, oldChild || null, newChild, isSVG)
+           patch(element, oldElements[oldNodeIndex] || null, oldChild, newChild, isSVG)
            newNodeIndex++
          }
         //  隐含条件，如果旧节点包含key而新节点没有，则需要移动到下一个旧节点去对比
@@ -78,8 +78,8 @@ export default function patch (parent: HTMLElement | SVGElement, element: null |
         removeElement(element, oldKeyed[key][0], oldKeyed[key][1])
       }
     }
-  } else if (typeof node === 'string') {
-    element.nodeValue = node
+  } else if (typeof node === 'string' || typeof node === 'number') {
+    element.nodeValue = node.toString()
   } else {
     // 替换整个节点
     let _rEl
@@ -92,6 +92,7 @@ export default function patch (parent: HTMLElement | SVGElement, element: null |
 export function rootPatch (parent: HTMLElement | SVGElement, element: null | HTMLElement | SVGElement, oldNode, node, isSVG?) {
   element = patch(parent, element, oldNode, node)
   let lifeCycle
+  // 确保调用是从最底层到外层
   while(lifeCycle = invokeLaterStack.pop()) lifeCycle()
   return element
 }
