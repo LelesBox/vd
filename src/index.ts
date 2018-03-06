@@ -15,7 +15,6 @@ export default function app (state, actions, views, container) {
   function render () {
     renderLock = !renderLock
     let newNode = views(state, actions)
-    console.log(newNode)
     rootElement = patch(container, rootElement, lastNode, (lastNode = newNode))
   }
 

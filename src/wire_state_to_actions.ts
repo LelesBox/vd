@@ -30,6 +30,7 @@ export default function wireStateToActions(globalState, globalActions, callback)
 }
 
 function setState(path, root, state) {
+  path = [].concat(path)
   let hasChange = false
   if (path.length === 0) {
     for (let key in state) {
