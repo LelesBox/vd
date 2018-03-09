@@ -2,8 +2,8 @@ import app from '../../src'
 import h from '../../src/h'
 import * as anime from 'animejs'
 
-// window.anime = anime
-
+let clientHeight = document.documentElement.clientHeight
+let clientWidth = document.documentElement.clientWidth
 const state = {
   card: {
     onpress: false
@@ -17,39 +17,44 @@ const actions = {
   }
 }
 
-let Card = () => (
+let Card = ({ top }) => (
   <div id ="card"
+    style={{ top: `${top}px` }}
     class={ `box colorful ${ state.card.onpress ? 'onpress' : '' }` } 
-    onclick={() => {
-      console.log('click')
-      // actions.card.touchstart()
-      // setTimeout(actions.card.touchend, 300)
-      anime({
-        targets: '#card',
-        borderRadius: "0px",
-        // right: 0,
-        // bottom: 0,
-        left: 0,
-        top: 0,
-        width: '375px',
-        height: '667px',
-        opacity: 0.5,
-        duration: 800,
-        delay: 0,
-        easing: 'easeOutExpo'
-      })
+    onclick={(e) => {
+
+      // console.log('click', e)
+      // anime({
+      //   targets: e.target,
+      //   borderRadius: "0px",
+      //   left: 0,
+      //   top: 0,
+      //   width: clientWidth + 'px',
+      //   height: clientHeight + 'px',
+      //   duration: 500,
+      //   delay: 0,
+      //   easing: 'easeOutExpo',
+      //   complete: function (anim) {
+      //     console.log('done')
+      //   }
+      // })
     }}
     ontouchstart={(e) => {
       actions.card.touchstart()
-      // e.preventDefault()
+      e.preventDefault()
     }} 
     ontouchend={actions.card.touchend}>
   </div>
 )
 
 const view = (state, actions) => (
-  <Card></Card>
+  <div id="root">
+    <Card top="30"></Card>
+    <Card top="300"></Card>
+  </div>
 )
 
 var mian = app(state, actions, view, document.body)
+// var mian = app(state, actions, view, '#root')
+
 

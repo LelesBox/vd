@@ -71,7 +71,7 @@ require = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({67:[function(require,module,exports) {
+})({42:[function(require,module,exports) {
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -220,7 +220,7 @@ function isDeepEqual(o1, o2) {
     }
 }
 exports.isDeepEqual = isDeepEqual;
-},{}],65:[function(require,module,exports) {
+},{}],40:[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -283,7 +283,7 @@ function getState(path, state) {
     }
     return state;
 }
-},{"./utils":67}],66:[function(require,module,exports) {
+},{"./utils":42}],41:[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -374,7 +374,7 @@ function rootPatch(parent, element, oldNode, node, isSVG) {
     }return element;
 }
 exports.rootPatch = rootPatch;
-},{"./utils":67}],64:[function(require,module,exports) {
+},{"./utils":42}],39:[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -413,7 +413,7 @@ function app(state, actions, views, container) {
     }
 }
 exports["default"] = app;
-},{"./wire_state_to_actions":65,"./patch":66}],34:[function(require,module,exports) {
+},{"./wire_state_to_actions":40,"./patch":41}],6:[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -438,7 +438,7 @@ function h(name, props) {
     }
 }
 exports["default"] = h;
-},{}],33:[function(require,module,exports) {
+},{}],4:[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -489,7 +489,7 @@ var view = function view(state, actions) {
 };
 var mian = src_1["default"](state, actions, view, document.body);
 // var mian = app(state, actions, view, '#root')
-},{"../../src":64,"../../src/h":34}],81:[function(require,module,exports) {
+},{"../../src":39,"../../src/h":6}],56:[function(require,module,exports) {
 
 var global = (1, eval)('this');
 var OldModule = module.bundle.Module;
@@ -511,7 +511,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '51403' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '59662' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
@@ -612,5 +612,5 @@ function hmrAccept(bundle, id) {
     return hmrAccept(global.require, id);
   });
 }
-},{}]},{},[81,33])
+},{}]},{},[56,4])
 //# sourceMappingURL=/dist/78640130b27ab1060b0bf77374dece12.map
