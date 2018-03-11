@@ -7,5 +7,6 @@ export interface vnode {
 
 // 组件函数接口，必须返回一个vnode
 export interface ComponentFunc {
-  (...reset): vnode
+  (...reset): vnode,
+  isClass: boolean
 }

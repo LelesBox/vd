@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "demo": "parcel example/index.html"
+    "demo": "parcel example/index.html",
+    "store": "parcel example/store.html"
   },
   "author": "",
   "license": "ISC",
