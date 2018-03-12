@@ -4,17 +4,16 @@ import Component from './component';
 // 基于jsx语法
 export default function h (name: string | ComponentFunc, props: null | Object, ...children: Array<vnode|string>):vnode {
   if (typeof name === 'function' && name.isClass) {
-    var instance = new name.prototype.constructor(props || {})
+    var instance = new name.prototype.constructor(props || {}, flatten(children))
     var vnode = instance.render()
     vnode.context = instance
-    console.log(vnode)
     return vnode
-  } else if (typeof name === 'function') { // 组件方法,支持组件内部嵌套子元素或者子组件
+  } else if (typeof name === 'function') { 
     let vnode = name(props || {})
+    // 组件方法,支持组件内部嵌套子元素或者子组件
     if (vnode.children && children.length > 0) {
       vnode.children = flatten(vnode.children.concat(children))
     }
-    // vnode.context = 
     return vnode
   } else {
     return {

@@ -23,6 +23,9 @@ export function createElement(node: vnode, isSVG?) {
   if (node.props && node.props.oncreate) {
     invokeLaterStack.push(() => node.props.oncreate(element, node))
   }
+  if (node.context) {
+    invokeLaterStack.push(() => node.context.oncreate(element, node))
+  }
 
   return element
 }

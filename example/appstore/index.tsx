@@ -1,5 +1,6 @@
 import app from '../../src'
 import h from '../../src/h'
+import Component from '../../src/component'
 import * as anime from 'animejs'
 
 let clientHeight = document.documentElement.clientHeight
@@ -16,21 +17,12 @@ const actions = {
     touchend: () => ({ onpress: false })
   }
 }
-// let Car = ({ top }) => {
 
-// }
-class VdComponent {
-  public props
-  constructor (props) {
-    this.props = props
-  }
-  public static isClass = true
-  render () {}
-}
-
-
-class Car extends VdComponent {
+class Car extends Component {
   onclick () {
+    console.log(this.props)
+  }
+  oncreate () {
     console.log(this.props)
   }
   render () {
@@ -38,8 +30,29 @@ class Car extends VdComponent {
   }
 }
 
-console.log('Car', Car.isClass)
-
+class Slot extends Component {
+  oncreate () {
+    console.log(this.children)
+  }
+  render () {
+    return (
+    <div class={this.props.className}>
+      <div>我是第一个子节点，下面全是插入进来的</div>
+      <div>
+        1
+        <div>
+          2
+          <div>
+            😆
+          </div>
+        </div>
+      </div>
+      {this.children}
+      <div>i am footer</div>
+    </div>
+    )
+  }
+}
 
 let Card = ({ top }) => (
   <div id ="card"
@@ -71,12 +84,16 @@ let Card = ({ top }) => (
 )
 
 const view = (state, actions) => { 
-  let cardList = [60, 330].map(top => {
+  let cardList = [330].map(top => {
     return <Card top={top}></Card>
   })
   return  (
     <div id="root">
       <Car class="nanni"/>
+      <Slot className="slot">
+        <div>i am in the slot</div>
+        <div>I am in the slot too</div>
+      </Slot>
       {cardList}
     </div>
   )

@@ -97,6 +97,11 @@ function createElement(node, isSVG) {
             return node.props.oncreate(element, node);
         });
     }
+    if (node.context) {
+        exports.invokeLaterStack.push(function () {
+            return node.context.oncreate(element, node);
+        });
+    }
     return element;
 }
 exports.createElement = createElement;
@@ -220,7 +225,7 @@ function isDeepEqual(o1, o2) {
     }
 }
 exports.isDeepEqual = isDeepEqual;
-},{}],6:[function(require,module,exports) {
+},{}],5:[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -283,7 +288,7 @@ function getState(path, state) {
     }
     return state;
 }
-},{"./utils":7}],5:[function(require,module,exports) {
+},{"./utils":7}],6:[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -379,6 +384,7 @@ exports.rootPatch = rootPatch;
 
 exports.__esModule = true;
 var wire_state_to_actions_1 = require("./wire_state_to_actions");
+// import patch from './patch'
 var patch_1 = require("./patch");
 function app(state, actions, views, container) {
     if (!container) throw new Error('container not exist');
@@ -403,7 +409,8 @@ function app(state, actions, views, container) {
     function render() {
         renderLock = !renderLock;
         var newNode = views(state, actions);
-        rootElement = patch_1["default"](container, rootElement, lastNode, lastNode = newNode);
+        // rootElement = patch(container, rootElement, lastNode, (lastNode = newNode))
+        rootElement = patch_1.rootPatch(container, rootElement, lastNode, lastNode = newNode);
     }
     function scheduleRender() {
         if (!renderLock) {
@@ -413,7 +420,7 @@ function app(state, actions, views, container) {
     }
 }
 exports["default"] = app;
-},{"./wire_state_to_actions":6,"./patch":5}],3:[function(require,module,exports) {
+},{"./wire_state_to_actions":5,"./patch":6}],3:[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -424,17 +431,16 @@ function h(name, props) {
         children[_i - 2] = arguments[_i];
     }
     if (typeof name === 'function' && name.isClass) {
-        var instance = new name.prototype.constructor(props || {});
+        var instance = new name.prototype.constructor(props || {}, flatten(children));
         var vnode = instance.render();
         vnode.context = instance;
-        console.log(vnode);
         return vnode;
     } else if (typeof name === 'function') {
         var vnode_1 = name(props || {});
+        // 组件方法,支持组件内部嵌套子元素或者子组件
         if (vnode_1.children && children.length > 0) {
             vnode_1.children = flatten(vnode_1.children.concat(children));
         }
-        // vnode.context = 
         return vnode_1;
     } else {
         return {
@@ -456,7 +462,37 @@ function flatten(arr) {
     }
     return rarr;
 }
-},{}],8:[function(require,module,exports) {
+},{}],12:[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+var utils_1 = require("./utils");
+var Component = /** @class */function () {
+    function Component(props, children) {
+        if (children === void 0) {
+            children = [];
+        }
+        this.props = props;
+        this.children = children;
+    }
+    Component.prototype.setState = function (_state) {
+        this.state = utils_1.copy(this.state, _state);
+        this.render();
+    };
+    Component.prototype.oncreate = function (element, node) {};
+    Component.prototype.onupdated = function () {};
+    Component.prototype.onremove = function () {};
+    Component.isClass = true;
+    return Component;
+}();
+exports["default"] = Component;
+// {
+//   name: 'div',
+//   props: '',
+//   children: [],
+//   context: _component
+// }
+},{"./utils":7}],8:[function(require,module,exports) {
 var global = (1,eval)("this");
 /*
  2017 Julian Garnier
@@ -513,6 +549,7 @@ var __extends = this && this.__extends || function () {
 exports.__esModule = true;
 var src_1 = require("../../src");
 var h_1 = require("../../src/h");
+var component_1 = require("../../src/component");
 var anime = require("animejs");
 var clientHeight = document.documentElement.clientHeight;
 var clientWidth = document.documentElement.clientWidth;
@@ -531,16 +568,6 @@ var actions = {
         }
     }
 };
-// let Car = ({ top }) => {
-// }
-var VdComponent = /** @class */function () {
-    function VdComponent(props) {
-        this.props = props;
-    }
-    VdComponent.prototype.render = function () {};
-    VdComponent.isClass = true;
-    return VdComponent;
-}();
 var Car = /** @class */function (_super) {
     __extends(Car, _super);
     function Car() {
@@ -549,12 +576,27 @@ var Car = /** @class */function (_super) {
     Car.prototype.onclick = function () {
         console.log(this.props);
     };
+    Car.prototype.oncreate = function () {
+        console.log(this.props);
+    };
     Car.prototype.render = function () {
         return h_1["default"]("div", { onclick: this.onclick.bind(this) }, "car");
     };
     return Car;
-}(VdComponent);
-console.log('Car', Car.isClass);
+}(component_1["default"]);
+var Slot = /** @class */function (_super) {
+    __extends(Slot, _super);
+    function Slot() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Slot.prototype.oncreate = function () {
+        console.log(this.children);
+    };
+    Slot.prototype.render = function () {
+        return h_1["default"]("div", { "class": this.props.className }, h_1["default"]("div", null, "\u6211\u662F\u7B2C\u4E00\u4E2A\u5B50\u8282\u70B9\uFF0C\u4E0B\u9762\u5168\u662F\u63D2\u5165\u8FDB\u6765\u7684"), h_1["default"]("div", null, "1", h_1["default"]("div", null, "2", h_1["default"]("div", null, "\uD83D\uDE06"))), this.children, h_1["default"]("div", null, "i am footer"));
+    };
+    return Slot;
+}(component_1["default"]);
 var Card = function Card(_a) {
     var top = _a.top;
     return h_1["default"]("div", { id: "card", style: { top: top + "px" }, "class": "box colorful " + (state.card.onpress ? 'onpress' : ''), onclick: function onclick(e) {
@@ -579,14 +621,14 @@ var Card = function Card(_a) {
         }, ontouchend: actions.card.touchend });
 };
 var view = function view(state, actions) {
-    var cardList = [60, 330].map(function (top) {
+    var cardList = [330].map(function (top) {
         return h_1["default"](Card, { top: top });
     });
-    return h_1["default"]("div", { id: "root" }, h_1["default"](Car, { "class": "nanni" }), cardList);
+    return h_1["default"]("div", { id: "root" }, h_1["default"](Car, { "class": "nanni" }), h_1["default"](Slot, { className: "slot" }, h_1["default"]("div", null, "i am in the slot"), h_1["default"]("div", null, "I am in the slot too")), cardList);
 };
 var mian = src_1["default"](state, actions, view, document.body);
 // var mian = app(state, actions, view, '#root')
-},{"../../src":4,"../../src/h":3,"animejs":8}],9:[function(require,module,exports) {
+},{"../../src":4,"../../src/h":3,"../../src/component":12,"animejs":8}],19:[function(require,module,exports) {
 
 var global = (1, eval)('this');
 var OldModule = module.bundle.Module;
@@ -608,7 +650,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '51193' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '50839' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
@@ -709,5 +751,5 @@ function hmrAccept(bundle, id) {
     return hmrAccept(global.require, id);
   });
 }
-},{}]},{},[9,2])
+},{}]},{},[19,2])
 //# sourceMappingURL=/dist/b02a8443de3a0498dafac0d77c8ab130.map

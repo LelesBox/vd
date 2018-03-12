@@ -1,5 +1,6 @@
 import wireStateToActions from './wire_state_to_actions'
-import patch from './patch'
+// import patch from './patch'
+import { rootPatch } from './patch'
 
 export default function app(state, actions, views, container) {
   if (!container) throw new Error('container not exist')
@@ -24,7 +25,8 @@ export default function app(state, actions, views, container) {
   function render() {
     renderLock = !renderLock
     let newNode = views(state, actions)
-    rootElement = patch(container, rootElement, lastNode, (lastNode = newNode))
+    // rootElement = patch(container, rootElement, lastNode, (lastNode = newNode))
+    rootElement = rootPatch(container, rootElement, lastNode, (lastNode = newNode))
   }
 
   function scheduleRender() {

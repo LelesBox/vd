@@ -1,44 +1,24 @@
 import { vnode } from "./interface";
 import { copy } from "./utils";
 
-function Component () {
-  // public state
-  // public props
-  // public vnode
-  // static createInstance (props) {
-  //   // return new Component(props)
-  // }
-  // constructor (props) {
-  //   this.props = props
-  //   this.vnode = this.render()
-  // }
-  // setState (_state) {
-  //   this.state = copy(this.state, _state)
-  //   this.render()
-  // }
-  // create () {}
-  // updated () {}
-  // remove () {}
-  // abstract render (): vnode
-}
-
-Component.prototype = {
-  constructor: Component,
-  setState: function () {
-
-  },
-  create: function () {
-
-  },
-  updated: function () {
-
-  },
-  remove: function () {
-
-  },
-  render: function () {
-
+abstract class Component  {
+  public state
+  public props
+  public vnode
+  public children
+  public static isClass = true
+  constructor (props, children = []) {
+    this.props = props
+    this.children = children
   }
+  setState (_state) {
+    this.state = copy(this.state, _state)
+    this.render()
+  }
+  oncreate (element, node:vnode) {}
+  onupdated () {}
+  onremove () {}
+  abstract render (): vnode
 }
 
 export default Component
